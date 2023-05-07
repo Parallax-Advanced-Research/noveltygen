@@ -1,0 +1,15 @@
+Novelty Effects
+new change: add effect
+missing change: remove effect
+replaced change: change fluent effect
+*** IS REPLACED CHANGE ONLY SETTERS =, WHILE SIZE CHANGE IS THE +-/* ***
+modified change probability: change prob effect
+Increase or Decrease in change size: Numerical fluent effect change
+
+Novelty Entry Determinism
+AVOID
+
+Novelty Obviousness
+Alien observation: add effect that isn't any other effect.
+entry transition discernible/probably novel transition discernable: observation couldn't have happened before
+novelty region inferable: given multiple observations, can infer we've entered novelty.

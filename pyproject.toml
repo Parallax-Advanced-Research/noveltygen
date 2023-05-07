@@ -1,0 +1,23 @@
+[project]
+name = "noveltygen"
+license = {text = "MIT License"}
+readme = "README.md"
+keywords=["novelty", "ai"]
+version = "1.0"
+authors = [
+    {name = "Noah Reifsnyder", email="noah.reifsnyder@parallaxresearch.org"},
+    {name = "Dustin Dannenhauer", email = "dustin.dannenhauer@parallaxresearch.org"},
+]
+
+maintainers = [
+    {name = "Dustin Dannenhauer", email="dustin.dannenhauer@parallaxresearch.org"},
+    {name = "Noah Reifsnyder", email="noah.reifsnyder@parallaxresearch.org"},
+]
+
+[build-system]
+requires = [
+    "setuptools>=42",
+    "wheel"
+]
+build-backend = "setuptools.build_meta"
+

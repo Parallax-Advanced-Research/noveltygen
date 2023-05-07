@@ -1,0 +1,53 @@
+LICENSE
+README.md
+pyproject.toml
+setup.py
+src/noveltygen/RTransformations.py
+src/noveltygen/TTransformations.py
+src/noveltygen/__init__.py
+src/noveltygen/novelty_generator.py
+src/noveltygen.egg-info/PKG-INFO
+src/noveltygen.egg-info/SOURCES.txt
+src/noveltygen.egg-info/dependency_links.txt
+src/noveltygen.egg-info/requires.txt
+src/noveltygen.egg-info/top_level.txt
+src/noveltygen/dimensions/__init__.py
+src/noveltygen/dimensions/Novel_Entry_Determinism/__init__.py
+src/noveltygen/dimensions/Novel_Entry_Determinism/agent_caused.py
+src/noveltygen/dimensions/Novel_Entry_Determinism/deterministic.py
+src/noveltygen/dimensions/Novel_Entry_Determinism/frequent_nondeterministic.py
+src/noveltygen/dimensions/Novel_Entry_Determinism/infrequent_nondeterministic.py
+src/noveltygen/dimensions/Novel_External_Agents/__init__.py
+src/noveltygen/dimensions/Novel_External_Agents/novel_external_agents_not_present.py
+src/noveltygen/dimensions/Novel_External_Agents/novel_external_agents_present.py
+src/noveltygen/dimensions/Novelity_Obviousness/__init__.py
+src/noveltygen/dimensions/Novelity_Obviousness/alien_observation.py
+src/noveltygen/dimensions/Novelity_Obviousness/entry_transition_discernable.py
+src/noveltygen/dimensions/Novelity_Obviousness/indistinguishable.py
+src/noveltygen/dimensions/Novelity_Obviousness/novel_transition_discernable.py
+src/noveltygen/dimensions/Novelity_Obviousness/novelty_region_inferable.py
+src/noveltygen/dimensions/Novelity_Obviousness/novelty_region_investigable.py
+src/noveltygen/dimensions/Novelity_Obviousness/statistical_novelty_only.py
+src/noveltygen/dimensions/Novelty Frequency/__init__.py
+src/noveltygen/dimensions/Novelty Frequency/continuous.py
+src/noveltygen/dimensions/Novelty Frequency/less_frequent_than_observation.py
+src/noveltygen/dimensions/Novelty Frequency/more_frequent_than_observation.py
+src/noveltygen/dimensions/Novelty_Observation_Localization/__init__.py
+src/noveltygen/dimensions/Novelty_Observation_Localization/distant.py
+src/noveltygen/dimensions/Novelty_Observation_Localization/mixed.py
+src/noveltygen/dimensions/Novelty_Observation_Localization/nearby.py
+src/noveltygen/dimensions/Transition_Novelty_Type/__init__.py
+src/noveltygen/dimensions/Transition_Novelty_Type/missing_change.py
+src/noveltygen/dimensions/Transition_Novelty_Type/modified_change_probability.py
+src/noveltygen/dimensions/Transition_Novelty_Type/modified_change_size.py
+src/noveltygen/dimensions/Transition_Novelty_Type/new_change.py
+src/noveltygen/dimensions/Transition_Novelty_Type/replaced_change.py
+src/noveltygen/levels/__init__.py
+src/noveltygen/levels/level1.py
+src/noveltygen/levels/level2.py
+src/noveltygen/levels/level3.py
+src/noveltygen/levels/level4.py
+src/noveltygen/levels/level5.py
+src/noveltygen/levels/level6.py
+src/noveltygen/levels/level7.py
+src/noveltygen/levels/level8.py

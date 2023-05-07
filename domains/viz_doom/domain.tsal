@@ -1,0 +1,293 @@
+(define (domain vizdoom)
+    (:requirements :typing :numerics :equality)
+    (:types
+        location direction status object - int
+        actor item obstacle - object
+        player enemy - actor
+    )
+    (:constants
+        ACTIVE INACTIVE - status
+        
+        NOACTOR - actor
+    )
+    (:predicates
+        (is-player ?a - actor) ;; is actor the player or an enemy object
+        (occupied ?loc - location) ;; is space occupied, can't be accessed by an actor
+        (connected ?loc1 - location ?loc2 - location) ;; is there a path from loc1 to loc2
+    )
+    (:fluents
+        (min-health ?a - actor) - int
+        (current-health ?a - actor) - int
+        (min-ammo ?p - player) - int
+        (current-ammo ?p - player) - int
+        (weapon-damage ?a - actor) - int
+        
+        (heal-amount ?i - item) - int
+        (damage-amount ?i - item) - int
+        (reload-amount ?i - item) - int
+        (actor-in-bounds ?i - item) - actor
+        
+        (object-status ?o - object) - status
+        (position ?o - object) - location ;; current position of obect
+        (angle ?o - object) - direction ;; current direction of object
+        (front ?o - object) - location ;; location in front of object
+        (back ?o - object) - location ;; location back of object
+        (right ?o - object) - location ;; location right of object
+        (left ?o - object) - location ;; location left of object
+        
+        ;; this fluent returns the first actor in line of sight of an object
+        ;; returns NOACTOR if no actor is visible or obstacle is blocking an actor
+        (in-line-of-sight ?o - object) - actor
+    )
+    (:actions
+        (:action move_forward
+            :parameters ()
+            :precondition 
+                (and
+                    (= (position ?p) ?loc1)        
+                    (= (front ?p) ?loc2)
+                    (connected ?loc1 ?loc2)
+                    (not (occupied ?loc2))
+                )               
+            :effect 
+                (and
+                    (= (position ?p) ?loc2)
+                )
+        )
+        (:action move_backward
+            :parameters ()
+            :precondition 
+                (and
+                    (= (position ?p) ?loc1)        
+                    (= (back ?p) ?loc2)
+                    (connected ?loc1 ?loc2)
+                    (not (occupied ?loc2))
+                )               
+            :effect 
+                (and
+                    (= (position ?p) ?loc2)
+                )
+        )
+        (:action move_left
+            :parameters ()
+            :precondition 
+                (and
+                    (= (position ?p) ?loc1)        
+                    (= (left ?p) ?loc2)
+                    (connected ?loc1 ?loc2)
+                    (not (occupied ?loc2))
+                )               
+            :effect 
+                (and
+                    (= (position ?p) ?loc2)
+                )        
+        )
+        (:action move_right
+            :parameters ()
+            :precondition 
+                (and
+                    (= (position ?p) ?loc1)        
+                    (= (right ?p) ?loc2)
+                    (connected ?loc1 ?loc2)
+                    (not (occupied ?loc2))
+                )               
+            :effect 
+                (and
+                    (= (position ?p) ?loc2)
+                )
+        )
+        (:action turn_left
+            :parameters ()
+            :precondition ()
+            :effect 
+                (and
+                    (- (angle ?p) 45)
+                )
+        )
+        (:action turn_right
+            :parameters ()
+            :precondition ()
+            :effect 
+                (and
+                    (+ (angle ?p) 45)
+                )
+        )
+        (:action shoot
+            :parameters ()
+            :precondition 
+                (and
+                    (> (current-ammo ?p) (min-ammo ?p))
+                )
+            :effect 
+                (and
+                    (- (current-ammo ?p) 1)
+                )
+        )
+        (:action nothing ;; Do nothing this frame(s)
+            :parameters ()
+            :precondition ()
+            :effect ()
+        )
+        (:action give_up
+            :parameters ()
+            :precondition ()
+            :effect 
+                (and
+                    (- (current-health ?p) (max-health ?p))
+                )
+        )
+    )
+    (:events
+        (:event ammo_pack_triggered
+            :parameters (?i - item)
+            :precondition 
+                (and
+                    (= (object-status ?i) ACTIVE)
+                    (= (actor-in-bounds ?i) ?a)
+                    (is-player ?a)
+                )
+            :effect 
+                (and
+                    (+ (current-ammo ?p) (reload-amount ?i))
+                    (= (object-status ?i) INACTIVE)
+                )
+        )
+        (:event health_pack_triggered
+            :parameters (?i - item)
+            :precondition
+                (and
+                    (= (object-status ?i) ACTIVE)
+                    (= (actor-in-bounds ?i) ?a)
+                    (is-player ?a)
+                )
+            :effect 
+                (and
+                    (+ (current-health?p) (heal-amount ?i))
+                    (= (object-status ?i) INACTIVE)
+                )
+        )
+        (:event trap_triggered
+            :parameters (?i - item)
+            :precondition
+                (and
+                    (= (object-status ?i) ACTIVE)
+                    (= (actor-in-bounds ?i) ?a)
+                    (is-player ?a)
+                )
+            :effect 
+                (and
+                    (- (current-health?p) (damage-amount ?i))
+                    (= (object-status ?i) INACTIVE)
+                )
+        )
+        (:event enemy_moving_front
+            :parameters (enemy ?e)
+            :precondition
+                (and
+                    (= (object-status ?i) ACTIVE)
+                    (= (position ?e) ?loc1)        
+                    (= (front ?e) ?loc2)
+                    (connected ?loc1 ?loc2)
+                    (not (occupied ?loc2))
+                )               
+            :effect 
+                (and
+                    (= (position ?e) ?loc2)
+                )
+        )
+        (:event enemy_moving_back
+            :parameters (enemy ?e)
+            :precondition
+                (and
+                    (= (object-status ?i) ACTIVE)
+                    (= (position ?e) ?loc1)        
+                    (= (back ?e) ?loc2)
+                    (connected ?loc1 ?loc2)
+                    (not (occupied ?loc2))
+                )               
+            :effect 
+                (and
+                    (= (position ?e) ?loc2)
+                )
+        )
+        (:event enemy_moving_left
+            :parameters (enemy ?e)
+            :precondition
+                (and
+                    (= (object-status ?i) ACTIVE)
+                    (= (position ?e) ?loc1)        
+                    (= (left ?e) ?loc2)
+                    (connected ?loc1 ?loc2)
+                    (not (occupied ?loc2))
+                )               
+            :effect 
+                (and
+                    (= (position ?e) ?loc2)
+                )
+        )
+        (:event enemy_moving_right
+            :parameters (enemy ?e)
+            :precondition
+                (and
+                    (= (object-status ?i) ACTIVE)
+                    (= (position ?e) ?loc1)        
+                    (= (right ?e) ?loc2)
+                    (connected ?loc1 ?loc2)
+                    (not (occupied ?loc2))
+                )               
+            :effect 
+                (and
+                    (= (position ?e) ?loc2)
+                )
+        )
+        (:event enemy_turning_left
+            :parameters (enemy ?e)
+            :precondition
+                (and
+                    (= (object-status ?i) ACTIVE)
+                )               
+            :effect 
+                (and
+                    (- (angle ?e) 45)
+                )
+        )
+        (:event enemy_turning_right
+            :parameters (enemy ?e)
+            :precondition
+                (and
+                    (= (object-status ?i) ACTIVE)
+                )               
+            :effect 
+                (and
+                    (+ (angle ?e) 45)
+                )
+        )
+        (:event actor_shoot
+            :parameters (actor ?a1)
+            :precondition
+                (and
+                    (= (object-status ?i) ACTIVE)
+                    (!= (in-line-of-sight ?a1) NOPLAYER)
+                    (= (in-line-of-sight ?a1) ?a2)
+                ) 
+            :effect 
+                (and
+                    (- (current-health ?a2) (weapon-damage ?a1))
+                )
+        )
+        (:event enemy_killed
+            :parameters (enemy ?e)
+            :precondition
+                (and
+                    (= (object-status ?e) ACTIVE)
+                    (<= (current-health ?e) (min-health ?e))
+                )
+            :effect
+                (and
+                    (= (object-status ?e) INACTIVE)
+                )
+        )
+    )
+)
+
+

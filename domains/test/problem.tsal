@@ -1,0 +1,29 @@
+(define (problem p20-3-32-small-network-20)
+(:domain data-network)
+(:objects
+    ag1 ag2 ag3 - agent
+)
+(:init
+   (is-blue ag1)
+   (= (self) ag1)
+)
+(:goal
+    (or
+        (and
+            (is-blue ag1)
+            (= (self) ag1)
+            (holds-flag ag1)
+        )
+        (and
+            (= (self) ag2)
+            (not (is-blue ag2))
+            (all-blue-dead)
+        )
+        (and
+            (= (self) ag3)
+            (not (is-blue ag3))
+            (all-blue-dead)
+        )
+    )
+)
+)

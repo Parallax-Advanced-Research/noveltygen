@@ -1,0 +1,62 @@
+Novel External Agents:
+    novel_external_agents_present: NO/can't
+    novel_external_agents_not_present: NO/can't
+Transition Novelty Type:
+    new_change: Yes/trivial
+        look for add effect or change fluent effect
+    missing_change: Yes/trivial
+        look for remove effect
+    replaced_change: Yes/trivial.
+        change fluent effect
+    modified_change_rate: Yes/trivial
+        look for change effect probability
+    modified_change_size: Yes/trivial
+        look for change fluent effect
+Novel Entry Determinism:
+    This section is tricky for me to understand formally
+    deterministic: No/non-trivial:
+        for all actions that could take the agent into novel, they will take the agent into novelty. Need to check effect probabilities.
+        add effect with prob 1. remove or change effect that had prob 1.
+    frequent_nondeterministic: No/trivial
+        add effect or remove effect or change effect with .5 < prob < 1.
+    infrequent_nondeterministic: No/trivial
+        add effect or remove effect or change effect with 0 < prob < .5
+    agent_caused: No/hard
+        changes to events that are not related to agents actions.
+Novelty Obviousness:
+    Requires information on observation functionality of agents.
+    alien_observation: No/Can't
+        would have to match agent observation space to novelty
+    entry_transition_discernible: No/Can't
+        would have to match agent observation space to novelty
+    novel_transition_discernible: Maybe, with multi step r-transformations
+        Seems like we need to add a new predicate/fluent, and then use that as a precondition.
+    novelty_region_inferable: No/Can't
+        would have to match agent observation space to novelty
+    novelty_region_investigable: No/Non-Trivial
+        Need a set of transitions that can happen after novelty, but never in the original environment.
+        Add an effect to an action that is the precondition of another action, where the negation is in the first actions preconditions.
+    statistical_novelty_only: Yes/trivial
+        Probability changes only. look for change_effect_probability.
+    indistinguishable: No/Can't
+        would have to match agent observation space to novelty
+Novel Observation Determinism:
+    This section is purely observation based, and we don't have a model of agent observations yet.
+    deterministic: No/Can't
+    frequent_nondeterministic: No/Can't
+    infrequent_nondeterministic: No/Can't
+Novelty Observation Localization:
+    Requires information on agent observations and the policy they are acting on
+    nearby:No/Can't
+    distant:No/Can't
+    mixed: No/Can't
+Novel State Observation Activity:
+    Requires information on observation functionality of agents.
+    passive: No/Can't
+    active: No/Can't
+    resource_expenditure_required: No/Can't
+Novelty Frequency:
+    Requires information on observation functionality of agents.
+    less_frequent_than_observation: No/Can't
+    more_frequent_than_observation: No/Can't
+    continuous: No/Can't
