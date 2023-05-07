@@ -8,7 +8,6 @@ files given a base domain and problem.
 ## About
 
 This is the implementation of the novelty generator from the following publications. Please cite the most recent publication if you use this code in your work:
-* Molineaux, Dannenhauer, and Kildebeck (2023) - "A Framework for Characterizing Novel Environment Transformations in General Environments" *Under Review*
 * Dannenhauer, D., Reifsnyder, N., Regester, AJ., Molineaux, M. "Transforming Environments to Evaluate Agent Adaptation." Advances in Cognitive Systems (ACS). George Mason University, Arlington, VA. 2022.
 
 Related work:
@@ -16,21 +15,23 @@ Related work:
 * Molineaux, M., Dannenhauer, D. "An Environment Transformation-based Framework for Comparison of Open-World Learning Agents." Designing Artificial Intelligence for Open Worlds. AAAI Spring Symposium Series 2022. Stanford University, CA. 2022. 
 
 ## Installation
-This package depends on our submodule [tsal-interpreter](put-link-here.com). After cloning the novelty generator into your project, make sure to initialize the interepreter. This can be
-done as follows:
+This package depends on [tsal](https://github.com/Parallax-Advanced-Research/tsal) library for reading, modifying, and saving tsal files. Eventually we will have these on pypi, until then please clone that project first, before following the steps below.
 ```commandline
-# get the repo and and submodules
-git clone ...
-cd novelty-generator
-git submodule update --init --remote
+# get the tsal repo, we'll come back to this soon
+git clone https://github.com/Parallax-Advanced-Research/tsal.git
 
-# set up a virtualenv and install packages
+# clone this repo
+git clone https://github.com/Parallax-Advanced-Research/noveltygen.git
+
+# create a virtualenv
+cd noveltygen
 python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 
-# add the novelty generator to your python path
-pip install .
+# and now make sure to install tsal
+cd ../tsal/
+pip install .  # use the -e flag if you end up modifying tsal code
 ```
 
 If you plan to modify the novelty generator code, install via:
@@ -45,7 +46,7 @@ These examples can be found in examples/example.py. These examples build on each
 
 ### Creating a novelty generator
 ```python
-from novelty_generator import NoveltyGenerator as NG
+from noveltygen import NoveltyGenerator as NG
 ng = NG(domain_file='domains/blocksworld/domain.tsal', problem_file='domains/blocksworld/problem.tsal')
 ```
 
@@ -87,8 +88,11 @@ for level in NG.Novelty_Levels:
     transform = level.value.gen(ng)
 ```
 
+### Generate scenarios 
+
+See domains/blocksworld/scenario_generator.py
+
 ## Future Tasks
-- Refactor the code so there's a top level src directory with all code under that. Move the current exmaples/ directory to a src/generation_methods directory; it's not really containing current examples, but instead different ways of constraining novelty generation.
 - Add documentation for the Scenario Generator
 - Add example of a T-Transformation
 - Add search capability to generate T-transformations
