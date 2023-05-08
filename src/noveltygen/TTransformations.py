@@ -113,7 +113,7 @@ class ScenarioGenerator(Generator):
             pass
 
     def __init__(self, domain=None, defaults=None, value_generators=None, object_generators=None, relation_generators=None,
-                 performance=None, create_from_scratch=False):
+                 performance=None, create_from_scratch=False, goal=[]):
         """
         If the domain is given, build a scenario generator from the domain. Otherwise, build a scenario generator
         from the other given parameters.
@@ -136,6 +136,7 @@ class ScenarioGenerator(Generator):
             self.object_generators = object_generators
             self.relation_generators = relation_generators
             self.performance = performance
+            self.goal = goal
             self.tt = ScenarioGenerator.TTransformation(self)
 
 

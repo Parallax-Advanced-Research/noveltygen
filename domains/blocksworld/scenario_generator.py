@@ -47,8 +47,6 @@ double_object_args = [[b1, b2] for b1 in block_objects_gen.draw() for b2 in bloc
 on_relation = RelationGenerator(on_pred, double_object_args).draw()[0]
 goal = [[self_expression, on_relation]]
 
-bsg = ScenarioGenerator(object_generators=[block_objects_gen, player_objects_gen], relation_generators=[ontable_relation_gen, clear_relation_gen, player_relation_gen, handempty_relation_gen], domain=blocks_world_ng.domain)
-bsg.goal = goal
-#blocks_world_ng.sg = bsg
+bsg = ScenarioGenerator(object_generators=[block_objects_gen, player_objects_gen], relation_generators=[ontable_relation_gen, clear_relation_gen, player_relation_gen, handempty_relation_gen], domain=blocks_world_ng.domain, goal=goal)
 
 print(bsg.draw())
