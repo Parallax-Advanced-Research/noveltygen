@@ -46,16 +46,19 @@ These examples can be found in examples/example.py. These examples build on each
 
 ### Creating a novelty generator
 ```python
-from noveltygen import NoveltyGenerator as NG
+from noveltygen.novelty_generator import NoveltyGenerator as NG
 ng = NG(domain_file='domains/blocksworld/domain.tsal', problem_file='domains/blocksworld/problem.tsal')
 ```
 
-### Generating a novelty at a novelty level
+### Generating a novelty at any novelty level
 
 Novelty levels refer to a categorization of different kinds of novelty from Kildebeck et al. 2022 - "2022 Novelty Hierarchy." *Unpublished manuscript.*
 
 ```python
-transform = NG.Novelty_Levels.LEVEL1.value.gen(ng)
+from noveltygen.levels.novelty_level import NoveltyLevel
+ng.gen_by_level[NoveltyLevel.LEVEL1]()
+...
+ng.gen_by_level[NoveltyLevel.LEVEL8]()
 ```
 
 Transform objects represent the novel change that has occurred, and consists of a 3-tuple: (Transformation_name, transformed_object, transformation)

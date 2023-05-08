@@ -13,6 +13,17 @@ from noveltygen.RTransformations import RTransformations
 from noveltygen.TTransformations import TTransformations
 from noveltygen.TTransformations import ScenarioGenerator
 
+from noveltygen.levels.novelty_level import NoveltyLevel
+from noveltygen.levels import level1
+from noveltygen.levels import level2
+from noveltygen.levels import level3
+from noveltygen.levels import level4
+from noveltygen.levels import level5
+from noveltygen.levels import level6
+from noveltygen.levels import level7
+from noveltygen.levels import level8
+
+
 root = os.path.dirname(os.path.realpath(__file__))
 root_ = root + "/"
 sbcl = None
@@ -56,12 +67,14 @@ class NoveltyGenerator:
         self.um_v_metrics = {}  # problem -> score ONLY FOR UM AGENT
         self.m_v_metrics = {}  # novelty -> problem -> score ONLY FOR M AGENT
         self.is_relevant = {}
+        self.gen_by_level = {}
+        self.load_novelty_levels2()
 
     def generate(self, level=0):
         assert_str = "Support novelty levels " + str(self.novelty_range[0]) + " through " + str(self.novelty_range[1])
         assert self.novelty_range[0] <= level <= self.novelty_range[1], assert_str
         self.generators[level](self)
-        #getattr(self, "generate" + str(level))()
+        #getattr(self, "generate" + str(novelty_level.py))()
         #self.validate4()
 
     def validate(self, level):
@@ -143,6 +156,16 @@ class NoveltyGenerator:
             level = level[:-3]
             self.levels[level.upper()] = getattr(self.levels, level)
         Novelty_Levels = Enum("Novelty_Levels", self.levels)
+
+    def load_novelty_levels2(self):
+        self.gen_by_level[NoveltyLevel.LEVEL1] = lambda: level1.gen(self)
+        self.gen_by_level[NoveltyLevel.LEVEL2] = lambda: level2.gen(self)
+        self.gen_by_level[NoveltyLevel.LEVEL3] = lambda: level3.gen(self)
+        self.gen_by_level[NoveltyLevel.LEVEL4] = lambda: level4.gen(self)
+        self.gen_by_level[NoveltyLevel.LEVEL5] = lambda: level5.gen(self)
+        self.gen_by_level[NoveltyLevel.LEVEL6] = lambda: level6.gen(self)
+        self.gen_by_level[NoveltyLevel.LEVEL7] = lambda: level7.gen(self)
+        self.gen_by_level[NoveltyLevel.LEVEL8] = lambda: level8.gen(self)
 
     def novelty_controllability(self, potential_solutions):
         return False

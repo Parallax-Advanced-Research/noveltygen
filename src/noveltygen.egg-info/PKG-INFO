@@ -15,7 +15,7 @@ License-File: LICENSE
 
 # Novelty Generator
 
-Novelty Generation for environments described using the TSAL Language. Allows the user to generate novel domain and problem
+Novelty Generation using the Tsal Language. Allows the user to generate novel domain and problem
 files given a base domain and problem. 
 
 ***
@@ -23,7 +23,6 @@ files given a base domain and problem.
 ## About
 
 This is the implementation of the novelty generator from the following publications. Please cite the most recent publication if you use this code in your work:
-* Molineaux, Dannenhauer, and Kildebeck (2023) - "A Framework for Characterizing Novel Environment Transformations in General Environments" *Under Review*
 * Dannenhauer, D., Reifsnyder, N., Regester, AJ., Molineaux, M. "Transforming Environments to Evaluate Agent Adaptation." Advances in Cognitive Systems (ACS). George Mason University, Arlington, VA. 2022.
 
 Related work:
@@ -31,21 +30,23 @@ Related work:
 * Molineaux, M., Dannenhauer, D. "An Environment Transformation-based Framework for Comparison of Open-World Learning Agents." Designing Artificial Intelligence for Open Worlds. AAAI Spring Symposium Series 2022. Stanford University, CA. 2022. 
 
 ## Installation
-This package depends on our submodule [tsal-interpreter](put-link-here.com). After cloning the novelty generator into your project, make sure to initialize the interepreter. This can be
-done as follows:
+This package depends on [tsal](https://github.com/Parallax-Advanced-Research/tsal) library for reading, modifying, and saving tsal files. Eventually we will have these on pypi, until then please clone that project first, before following the steps below.
 ```commandline
-# get the repo and and submodules
-git clone ...
-cd novelty-generator
-git submodule update --init --remote
+# get the tsal repo, we'll come back to this soon
+git clone https://github.com/Parallax-Advanced-Research/tsal.git
 
-# set up a virtualenv and install packages
+# clone this repo
+git clone https://github.com/Parallax-Advanced-Research/noveltygen.git
+
+# create a virtualenv
+cd noveltygen
 python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 
-# add the novelty generator to your python path
-pip install .
+# and now make sure to install tsal
+cd ../tsal/
+pip install .  # use the -e flag if you end up modifying tsal code
 ```
 
 If you plan to modify the novelty generator code, install via:
@@ -59,15 +60,12 @@ pip install -e .
 These examples can be found in examples/example.py. These examples build on each other.
 
 ### Creating a novelty generator
-
 ```python
-from src.noveltygen.novelty_generator import NoveltyGenerator as NG
-
-ng = NG(domain_file='src/noveltygen/domains/blocksworld/domain.tsal',
-        problem_file='src/noveltygen/domains/blocksworld/problem.tsal')
+from from noveltygen.novelty_generator import NoveltyGenerator as NG
+ng = NG(domain_file='domains/blocksworld/domain.tsal', problem_file='domains/blocksworld/problem.tsal')
 ```
 
-### Generating a novelty at a novelty level
+### Generating a novelty at any novelty level
 
 Novelty levels refer to a categorization of different kinds of novelty from Kildebeck et al. 2022 - "2022 Novelty Hierarchy." *Unpublished manuscript.*
 
@@ -105,45 +103,11 @@ for level in NG.Novelty_Levels:
     transform = level.value.gen(ng)
 ```
 
-### Generate novelties per specific transformations
+### Generate scenarios 
 
-```python
-ng = NG(domain_file=domain_file, problem_file=problem_file)
-transformations = ["add_effect", "add_precondition"]  # a list of all the transformations you would like to be considered
-transform = ng.gen_r_transform(transformations)
-print(transform)
-```
-
-### Generating noveltis based on novelty-dimension values
-
-```python
-from src.noveltygen.novelty_generator import NoveltyGenerator
-
-for dim in NoveltyGenerator.Novelty_Dimensions:
-    ng = NoveltyGenerator("src/noveltygen/domains/monopoly_goal_test/domain.pddl",
-                          "src/noveltygen/domains/monopoly_goal_test/problem.pddl")
-    print(dim.name, "\n", dim.value.gen(ng))
-
-print("LEVELS", NoveltyGenerator.Novelty_Levels)
-for level in NoveltyGenerator.Novelty_Levels:
-    ng = NoveltyGenerator("src/noveltygen/domains/monopoly_goal_test/domain.pddl",
-                          "src/noveltygen/domains/monopoly_goal_test/problem.pddl")
-    print(level.name, "\n", level.value.gen(ng))
-
-```
-
-### Generating novel states
-
-```python
-ng = NoveltyGenerator.NoveltyGenerator("domains/monopoly_goal_test/domain.tsal",
-                                       "domains/monopoly_goal_test/problem.tsal")
-#ng = NoveltyGenerator.NoveltyGenerator("viz_doom/domain.tsal")
-sg = ng.sg
-sg.draw()
-```
+See domains/blocksworld/scenario_generator.py
 
 ## Future Tasks
-- Refactor the code so there's a top level src directory with all code under that. Move the current exmaples/ directory to a src/generation_methods directory; it's not really containing current examples, but instead different ways of constraining novelty generation.
 - Add documentation for the Scenario Generator
 - Add example of a T-Transformation
 - Add search capability to generate T-transformations
