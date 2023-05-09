@@ -155,7 +155,9 @@ Make a goal
 
 ```python
 # generate a goal
-self_expression = Expression(operator="=", left_child=Fluent(name="self"), right_child=Expression(value=first_player))
+self_expression = Expression(operator="=", 
+                             left_child=Fluent(name="self"), 
+                             right_child=Expression(value=first_player))
 on_pred = [pred for pred in blocks_world_ng.domain.predicates if pred.name == "on"][0]
 
 double_object_args = [[b1, b2] for b1 in block_objects_gen.draw() for b2 in block_objects_gen.draw() if b1 != b2]
@@ -167,7 +169,10 @@ goal = [[self_expression, on_relation]]
 Finally, put it all together into a scenario generator and call `draw()` to generate scenarios:
 
 ```python
-bsg = ScenarioGenerator(object_generators=[block_objects_gen, player_objects_gen], relation_generators=[ontable_relation_gen, clear_relation_gen, player_relation_gen, handempty_relation_gen], domain=blocks_world_ng.domain, goal=goal)
+bsg = ScenarioGenerator(object_generators=[block_objects_gen, player_objects_gen], 
+                        relation_generators=[ontable_relation_gen, clear_relation_gen, player_relation_gen, handempty_relation_gen], 
+                        domain=blocks_world_ng.domain, 
+                        goal=goal)
 
 print(bsg.draw())
 ```

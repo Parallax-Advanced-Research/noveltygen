@@ -10,8 +10,6 @@ Run this from within 'domains/blocksworld'
 """
 
 
-
-
 blocks_world_ng = NG("domain.tsal", "problem.tsal")
 
 for level_i in NoveltyLevel.__members__.values():
