@@ -2,6 +2,7 @@ from enum import Enum
 
 
 class RTransformation(Enum):
+    # Note: the enum name must match a corresponding function in RTransformations.py
     ACTION_TO_EVENT = 1
     ADD_ACTION = 2
     ADD_CONSTANT = 3
@@ -28,3 +29,5 @@ class RTransformation(Enum):
     REMOVE_PREDICATE = 24
     REMOVE_TYPE = 25
     REMOVE_TYPE_PARENT = 26
+
+

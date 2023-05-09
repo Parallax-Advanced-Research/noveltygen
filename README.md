@@ -86,8 +86,23 @@ and the transform output:
 ### Generate a novelty at each novelty level
 ```python
 for level_i in NoveltyLevel.list(Color.__members__.values()):  
-    transform = transform = ng.gen_by_level[level_i]()
+    transform = ng.gen_by_level[level_i]()
 ```
+
+### Generate novelties based on a specific set of RTransformations
+
+```python
+from noveltygen.RTransformation import RTransformation
+
+# choose your RTransformations 
+rtransforms = [RTransformation.ADD_EFFECT,
+               RTransformation.ADD_PRECONDITION,
+               RTransformation.REMOVE_EFFECT]
+
+# get a new environment only considering those RTransformations
+transform = ng.gen_r_transform(transformations=rtransforms)
+```
+
 
 ### Generate scenarios 
 
