@@ -174,7 +174,7 @@ bsg = ScenarioGenerator(object_generators=[block_objects_gen, player_objects_gen
                         domain=blocks_world_ng.domain, 
                         goal=goal)
 
-print(bsg.draw())
+problem_instance = bsg.draw()
 ```
 
 ## Future Tasks
