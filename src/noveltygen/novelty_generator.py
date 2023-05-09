@@ -88,7 +88,10 @@ class NoveltyGenerator:
         self.rt = RTransformations(copy.deepcopy(self.domain))
         while transformations:
             rt_i = random.choice(transformations)
-            func = str(rt_i.name).lower()
+            func = rt_i
+            if isinstance(rt_i, Enum):
+                func = str(rt_i.name).lower()
+            #func = str(rt_i.name).lower()
             #transformations.remove(func)
 
             t = getattr(self.rt, func)(avoid=[x[0] for x in self.novelties['RTransformations'] if x[0][0] == func], spec_avoid=spec_avoid)

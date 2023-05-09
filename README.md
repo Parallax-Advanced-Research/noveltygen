@@ -83,12 +83,6 @@ and the transform output:
 )
 ```
 
-### Generate a novelty at each novelty level
-```python
-for level_i in NoveltyLevel.list(Color.__members__.values()):  
-    transform = ng.gen_by_level[level_i]()
-```
-
 ### Generate novelties based on a specific set of RTransformations
 
 ```python

@@ -1,6 +1,7 @@
 from noveltygen.novelty_generator import NoveltyGenerator as NG
 from noveltygen.RTransformations import RTransformations
 from noveltygen.RTransformation import RTransformation
+from noveltygen.levels.novelty_level import NoveltyLevel
 
 """
 Example showing how to generate blocksworld domains using RTransformations.
@@ -8,7 +9,21 @@ Example showing how to generate blocksworld domains using RTransformations.
 Run this from within 'domains/blocksworld'
 """
 
+
+
+
 blocks_world_ng = NG("domain.tsal", "problem.tsal")
+
+for level_i in NoveltyLevel.__members__.values():
+    transform = blocks_world_ng.gen_by_level[level_i]()
+    r_transformation_used = transform[0]
+    new_tsal_construct = transform[1]
+    change_only = transform[2]
+    print("Generated domain #{}:".format(level_i))
+    print("\tR-transformation used: {}".format(r_transformation_used))
+    print("\tTSAL construct: {}...".format(str(new_tsal_construct).replace('\n', ' ')[:50]))
+    print("\tChanged: {}".format(change_only))
+
 #rtr = RTransformations(blocks_world_ng.domain)
 
 # print("All possible R Transformations:")
