@@ -276,12 +276,28 @@ class RTransformations:
         self.delete_dependencies(action)
         self.domain.operators.remove(action)
 
-    def remove_event(self, event: Event, prob=None, avoid=[]):  # FINISHED
-        if self.check(prob) or event not in self.domain.events:
-            return
+    def remove_event(self, event: Event=None, avoid=[], spec_avoid=[]):
+        """
+        event: event to remove, a random one will be chosen if none is provided
+        avoid: events to avoid
+        spec_avoid: only for matching the same call style as other functions, not used here
+        TODO: To follow the single-step transformation paradigm, this should only remove an event if it has
+        TODO: no preconditions or effects. This is not currently implemented.
+        """
+
+        if not self.domain.events:
+            return "remove_event", None, None
+
+        if not event:
+            event = random.choice([x for x in self.domain.events if x not in avoid])
+
+        if event not in self.domain.events:
+            return "remove_event", None, None
+
         new_events = [e for e in self.domain.events if e != event]
         self.domain.events = new_events
         self.delete_dependencies(event)
+        return "remove_event", self.domain.events, event
 
     def event_to_action(self, event: Event=None, avoid=[], spec_avoid=[]):
 
