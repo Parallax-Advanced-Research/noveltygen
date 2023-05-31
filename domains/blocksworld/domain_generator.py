@@ -51,7 +51,9 @@ for rtr in rtr_choices:
     r_transformation_used = transform[0]
     new_tsal_construct = transform[1]
     change_only = transform[2]
-    #print("Generated domain #{}:".format(i))
+    if r_transformation_used is None and new_tsal_construct is None and change_only is None:
+        print("No valid transformation found for {}".format(rtr))
+        continue
     print("\tR-transformation used: {}".format(r_transformation_used))
     print("\tTSAL construct: {}...".format(str(new_tsal_construct).replace('\n',' ')[:50]))
     print("\tChanged: {}".format(change_only))

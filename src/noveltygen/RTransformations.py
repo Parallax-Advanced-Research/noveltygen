@@ -267,9 +267,17 @@ class RTransformations:
         self.domain.events = new_events
         self.delete_dependencies(event)
 
-    def event_to_action(self, event: Event, prob=None):  # TODO: change name if name exists in actions
-        if self.check(prob) or event not in self.domain.events:
-            return
+    def event_to_action(self, event: Event=None, avoid=[], spec_avoid=[]):
+
+        if not self.domain.events:
+            return "event_to_action", None, None
+
+        if event is None:
+            event = random.choice([x for x in self.domain.events if x not in avoid])
+
+        if event not in self.domain.events:
+            return "event_to_action", None, None
+
         # same_names = [x for x in self.domain.operators if x.name == event.name]
         new_action = Action(dc(event.name), dc(event.params), dc(event.precond), dc(event.effects), dc(event.duration))
         if event in self.domain.events:
@@ -279,13 +287,18 @@ class RTransformations:
         self.domain.operators.append(new_action)
         self.new_dependencies(new_action)
 
-    def action_to_event(self, action: Action=None, avoid=[], spec_avoid=[]):  # TODO: change name if name exists in events
+        return "event_to_action", event, new_action
+
+    def action_to_event(self, action: Action=None, avoid=[], spec_avoid=[]):
+
+        if not self.domain.operators:
+            return "action_to_event", None, None
 
         if action is None:
             action = random.choice([x for x in self.domain.operators if x not in avoid])
 
         if action not in self.domain.operators:
-            return
+            return "action_to_event", None, None
 
         new_event = Event(action.name, action.params, action.precond, action.effects, action.duration)
         self.domain.operators.remove(action)

@@ -100,6 +100,7 @@ class NoveltyGenerator:
                 self.novelties['RTransformations'].append((t, self.rt.domain))
                 return t
             else:
+                transformations.remove(rt_i)
                 continue
 
         return None, None, None
