@@ -8,7 +8,7 @@ from tsal.translator.term import Term
 from tsal.translator.predicate import Predicate
 from queue import Queue
 from tsal.translator.problem import Problem
-from src.noveltygen.RTransformations import RTransformations
+from noveltygen.RTransformations import RTransformations
 
 match_to_constants_first = True
 
