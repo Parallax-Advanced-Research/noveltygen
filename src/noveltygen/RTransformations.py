@@ -229,7 +229,23 @@ class RTransformations:
                 self.add_effect(new_action)
         self.domain.operators.append(new_action)
 
-    def add_event(self, preconditions: ArgLengthP = [], effects: ArgLengthP = [], max_pre=3, max_eff=3):
+    def add_event(self, event_name: str = None, avoid=[], spec_avoid=[]):
+        """
+        event_name: name of the event to add, a random one will be generated
+        avoid: only for matching the same call style as other functions, not used here
+        spec_avoid: only for matching the same call style as other functions, not used here
+        """
+        if not event_name:
+            event_name = self.gen_name('event')
+        while event_name in [x.name for x in self.domain.events]:
+            event_name = self.gen_name('event')
+        new_event = Event(name=event_name, params=[], precond=[], effects=[[]])
+        self.domain.events.append(new_event)
+        return "add_event", self.domain.events, new_event
+
+    def add_event_full(self, preconditions: ArgLengthP = [], effects: ArgLengthP = [], max_pre=3, max_eff=3):
+        """Adds a new event and does extra steps to populate it. This is a convenience because it is technically
+        applying multiple RTransformations at the same time"""
         # TODO: Duration and distribution
         letters = string.ascii_lowercase
         num_letters = round(random.uniform(4, 10))
