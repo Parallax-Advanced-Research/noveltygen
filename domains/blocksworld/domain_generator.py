@@ -37,15 +37,21 @@ print("-----------------------------------------------------")
 rtr_choices = [RTransformation.ADD_EFFECT,
                RTransformation.ADD_PRECONDITION,
                RTransformation.REMOVE_EFFECT,
-               RTransformation.REMOVE_PRECONDITION]
+               RTransformation.REMOVE_PRECONDITION,
+               RTransformation.ACTION_TO_EVENT,
+               RTransformation.EVENT_TO_ACTION,
+               RTransformation.ADD_EVENT,
+               RTransformation.REMOVE_EVENT,
+               RTransformation.ADD_ACTION,
+               RTransformation.REMOVE_ACTION]
 
-num_domains_to_generate = 10
-for i in range(num_domains_to_generate):
-    transform = blocks_world_ng.gen_r_transform(transformations=rtr_choices)
+num_domains_to_generate = 20
+for rtr in rtr_choices:
+    transform = blocks_world_ng.gen_r_transform(transformations=[rtr])
     r_transformation_used = transform[0]
     new_tsal_construct = transform[1]
     change_only = transform[2]
-    print("Generated domain #{}:".format(i))
+    #print("Generated domain #{}:".format(i))
     print("\tR-transformation used: {}".format(r_transformation_used))
     print("\tTSAL construct: {}...".format(str(new_tsal_construct).replace('\n',' ')[:50]))
     print("\tChanged: {}".format(change_only))

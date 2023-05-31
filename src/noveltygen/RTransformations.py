@@ -279,15 +279,22 @@ class RTransformations:
         self.domain.operators.append(new_action)
         self.new_dependencies(new_action)
 
-    def action_to_event(self, action: Action, prob=None):  # TODO: change name if name exists in events
-        if self.check(prob) or action not in self.domain.operators:
+    def action_to_event(self, action: Action=None, avoid=[], spec_avoid=[]):  # TODO: change name if name exists in events
+
+        if action is None:
+            action = random.choice([x for x in self.domain.operators if x not in avoid])
+
+        if action not in self.domain.operators:
             return
+
         new_event = Event(action.name, action.params, action.precond, action.effects, action.duration)
         self.domain.operators.remove(action)
         new_events = self.domain.events + [new_event]
         self.domain.events = new_events
         self.delete_dependencies(action)
         self.new_dependencies(new_event)
+
+        return "action_to_event", action, new_event
 
     def get_relevent_terms(self, action_event):
         terms = []  # TODO: reference type to the type of fluents?
@@ -695,7 +702,7 @@ class RTransformations:
             args = [action_event] + dependency[2:]
             if args[1] == 'precond' and args[2] == precond:
                 self.dependencies[dependency[0]][dependency[1]].remove(args)
-                
+
         return "remove_precondition", action_event, precond
 
     def remove_type(self, typ: Term):
