@@ -668,17 +668,35 @@ class RTransformations:
                 self.dependencies[dependency[0]][dependency[1]].remove(args)
         return "remove_effect", action_event, effect
 
-    def remove_precondition(self, action_event: Union[Action, Event], precond: SubVarP, prob=None, avoid=[], spec_avoid=[]):
+    def remove_precondition(self, action_event: Union[Action, Event]=None, precond: SubVarP=None, avoid=[], spec_avoid=[]):
+        """
+        action_event: Action or Event that has the precondition to be removed (if None, a random one is chosen)
+        precond: precondition to be removed (if None, a random one is chosen)
+        avoid: list of actions/events to avoid
+        spec_avoid: list of specific preconditions to avoid # todo currently exists to keep API calls similar, but not used
+        """
+
         # TODO: update param list if possible
-        if self.check(prob) or action_event not in self.domain.operators + self.domain.events:
+        if action_event is None:
+            action_event = random.choice([x for x in self.domain.operators+self.domain.events if x not in avoid])
+
+        if action_event not in self.domain.operators + self.domain.events:
+            # this should only happen an action_event is passed in and doesn't exist in the domain
             return
+
         preconds = action_event.precond
+
+        if precond is None:
+            precond = random.choice([x for x in action_event.precond if x not in spec_avoid])
+
         preconds.remove(precond)
         action_event.precond = preconds
         for dependency in self.dependencies['rlu'][action_event]:
             args = [action_event] + dependency[2:]
             if args[1] == 'precond' and args[2] == precond:
                 self.dependencies[dependency[0]][dependency[1]].remove(args)
+                
+        return "remove_precondition", action_event, precond
 
     def remove_type(self, typ: Term):
         # TODO: typing on typ to match other functions, get possible args from domain

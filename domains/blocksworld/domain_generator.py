@@ -36,7 +36,8 @@ print("-----------------------------------------------------")
 
 rtr_choices = [RTransformation.ADD_EFFECT,
                RTransformation.ADD_PRECONDITION,
-               RTransformation.REMOVE_EFFECT]
+               RTransformation.REMOVE_EFFECT,
+               RTransformation.REMOVE_PRECONDITION]
 
 num_domains_to_generate = 10
 for i in range(num_domains_to_generate):
