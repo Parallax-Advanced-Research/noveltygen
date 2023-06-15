@@ -846,10 +846,10 @@ class RTransformations:
         # check if pred is used in an action/event
         used_predicates = set()
         for action_event in self.domain.operators + self.domain.events:
-            for pred in action_event.precond:
-                used_predicates.add(pred)
-            for pred in action_event.effects[0]:
-                used_predicates.add(pred)
+            for pred_i in action_event.precond:
+                used_predicates.add(pred_i.predicate)
+            for pred_i in action_event.effects[0]:
+                used_predicates.add(pred_i[1].predicate)
 
         if pred is None:
             valid_choices = [x for x in self.domain.predicates if x not in avoid+list(used_predicates)]
