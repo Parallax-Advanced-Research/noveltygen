@@ -229,6 +229,8 @@ class RTransformations:
                 self.add_effect(new_action)
         self.domain.operators.append(new_action)
 
+        return "add_action", self.domain.operators, new_action
+
     def add_event(self, event_name: str = None, avoid=[], spec_avoid=[]):
         """
         event_name: name of the event to add, a random one will be generated
@@ -270,11 +272,17 @@ class RTransformations:
                 self.add_effect(new_event)
         self.domain.events.append(new_event)
 
-    def remove_action(self, action: Action, prob=None, avoid=[]):
+    def remove_action(self, action: Action=None, prob=None, avoid=[], spec_avoid=[]):
+        if action is None:
+            action = random.choice(self.domain.operators)
+
         if self.check(prob) or action not in self.domain.operators:
             return
+
         self.delete_dependencies(action)
         self.domain.operators.remove(action)
+
+        return "remove_action", self.domain.operators, action
 
     def remove_event(self, event: Event=None, avoid=[], spec_avoid=[]):
         """
