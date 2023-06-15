@@ -207,7 +207,7 @@ class RTransformations:
             fluent = random.choice(self.domain.fluents)
         self.domain.fluents = [x for x in self.domain.fluents if x != fluent]
 
-    def add_action(self, preconditions: ArgLengthP = [], effects: ArgLengthP = [], max_pre=3, max_eff=3):
+    def add_action(self, preconditions: ArgLengthP = [], effects: ArgLengthP = [], max_pre=3, max_eff=3, avoid=[], spec_avoid=[]):
         new_action_name = self.gen_name('action')
         while new_action_name in [x.name for x in self.domain.operators]:
             new_action_name = self.gen_name('action')
@@ -391,8 +391,8 @@ class RTransformations:
         if not choice:
             return None, None, None
 
+        choice_lst = []
         if not action_event:
-            choice_lst = []
             if events:
                 choice_lst += self.domain.events
             if operators:

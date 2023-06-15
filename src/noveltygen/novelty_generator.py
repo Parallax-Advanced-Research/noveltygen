@@ -95,7 +95,7 @@ class NoveltyGenerator:
             #transformations.remove(func)
 
             t = getattr(self.rt, func)(avoid=[x[0] for x in self.novelties['RTransformations'] if x[0][0] == func], spec_avoid=spec_avoid)
-            if t[1] is not None:
+            if t and t[1] is not None:
                 self.novel_domain = True
                 self.novelties['RTransformations'].append((t, self.rt.domain))
                 return t
