@@ -771,6 +771,12 @@ class RTransformations:
         # TODO: consider update where we link types to predicates, and remove predicates that involve type?
 
         if typ is None:
+            # TODO - implement this
+            # idea: choose a random type.
+            # if it has a child types and a parent type, then the parent type becoems the parent of the child types
+            # if there is not parent type, then the child types become top-level
+            # if there is no child types, then just remove the type.
+            # IMPORTANT NOTE: need to update 'litypes' and 'types' in domain
             typ = random.choice(self.domain.types)
 
         # TODO - make sure that the chosen type is not used in any other predicates, preconditions or effects
@@ -779,7 +785,7 @@ class RTransformations:
         self.domain.types = [x for x in self.domain.types if x != typ]
 
         return "remove_type", self.domain.types, typ
-        
+
 
     def add_predicate(self, terms: ArgLengthT = [], avoid=[], spec_avoid=[]):
         letters = string.ascii_lowercase
