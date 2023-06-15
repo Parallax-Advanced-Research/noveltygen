@@ -184,7 +184,7 @@ class RTransformations:
     def remove_constant(self):
         pass
 
-    def add_fluent(self, name: str = None, args: ArgLengthT = [], bounds: Bounds = []):
+    def add_fluent(self, name: str = None, args: ArgLengthT = [], bounds: Bounds = [],avoid=[], spec_avoid=[]):
         #  takes constructor args, instead of main fluent. Matches slides, not document
         if not name:
             name = self.gen_name('fluent')
@@ -201,11 +201,18 @@ class RTransformations:
         fluent = Fluent(name, args, bounds)
         self.domain.fluents.append(fluent)
 
-    def remove_fluent(self, fluent=None, avoid=[]):
+        return "add_fluent", self.domain.fluents, fluent
+
+    def remove_fluent(self, fluent=None, avoid=[], spec_avoid=[]):
         # matches slides, not in document
         if not fluent:
             fluent = random.choice(self.domain.fluents)
         self.domain.fluents = [x for x in self.domain.fluents if x != fluent]
+
+        # TODO - check that the fluent is not in any preconditions or effects
+        # TODO - see remove_predicate() for example of how to do this
+
+        return "remove_fluent", self.domain.fluents, fluent
 
     def add_action(self, preconditions: ArgLengthP = [], effects: ArgLengthP = [], max_pre=3, max_eff=3, avoid=[], spec_avoid=[]):
         new_action_name = self.gen_name('action')
