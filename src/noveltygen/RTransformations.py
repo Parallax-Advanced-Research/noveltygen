@@ -765,64 +765,21 @@ class RTransformations:
 
         return "remove_precondition", action_event, precond
 
-    def remove_type(self, typ: Term):
+    def remove_type(self, typ: Term=None, avoid=[], spec_avoid=[]):
         # TODO: typing on typ to match other functions, get possible args from domain
         # TODO: update to refelct remove pred
         # TODO: consider update where we link types to predicates, and remove predicates that involve type?
-        remove = []
-        dependencies = (self.dependencies['types'][typ])
-        for action_event, p_e, depen_pred, term in dependencies:
-            if p_e == 'precond':
-                precond = action_event.precond
-                if depen_pred in precond:  # Could have been previously deleted if multiple args of pred are of type typ
-                    precond.remove(depen_pred)
-                action_event.precond = precond
-                for dependency in self.dependencies['rlu'][action_event]:
-                    args = [action_event] + dependency[2:]
-                    if args[1] == 'precond' and args[2] == depen_pred:
-                        remove.append((dependency[0], dependency[1], args))
-            elif p_e == 'effects':
-                effects = action_event.effects[0]
-                for eff in effects:
-                    if eff[1] == depen_pred:
-                        effects.remove(eff)
-                        break
-                action_event.effects = [effects]
-                for dependency in self.dependencies['rlu'][action_event]:
-                    args = [action_event] + dependency[2:]
-                    if args[1] == 'effect' and args[2] == depen_pred:
-                        remove.append((dependency[0], dependency[1], args))
-            else:
-                print("Something went wrong in Remove_Type")
-        removed = []
-        for dependency in remove:
-            if dependency in removed:
-                continue
-            self.dependencies[dependency[0]][dependency[1]].remove(dependency[2])
-            removed.append(dependency)
-        new = [typ]
-        remove = []
-        while new:
-            temp = dc(new)
-            for t in temp:
-                new.remove(t)
-                remove.append(t)
-                if t in self.domain.types:
-                    new += self.domain.types[t]
-                    if t in new:
-                        new.remove(t)
-        for t in remove:
-            if t in self.domain.types:
-                self.domain.types.pop(t)
-            if t in self.li_types:
-                self.li_types.remove(t)
-            if t in self.types:
-                self.types.pop(t)
-        for t in self.domain.types:
-            self.domain.types[t] = [x for x in self.domain.types[t] if x not in remove]
 
-    # def change_type_parent(self, typ):
-    #   pass  # TODO: This one feels excessively tricky
+        if typ is None:
+            typ = random.choice(self.domain.types)
+
+        # TODO - make sure that the chosen type is not used in any other predicates, preconditions or effects
+        # TODO - note - this is harder than remove_pred and remove_fluent, because need extra loop to check for type
+
+        self.domain.types = [x for x in self.domain.types if x != typ]
+
+        return "remove_type", self.domain.types, typ
+        
 
     def add_predicate(self, terms: ArgLengthT = [], avoid=[], spec_avoid=[]):
         letters = string.ascii_lowercase
