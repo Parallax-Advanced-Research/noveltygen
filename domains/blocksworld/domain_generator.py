@@ -43,7 +43,9 @@ rtr_choices = [RTransformation.ADD_EFFECT,
                RTransformation.ADD_EVENT,
                RTransformation.REMOVE_EVENT,
                RTransformation.ADD_ACTION,
-               RTransformation.REMOVE_ACTION]
+               RTransformation.REMOVE_ACTION,
+               RTransformation.ADD_PREDICATE,
+               RTransformation.REMOVE_PREDICATE,]
 
 num_domains_to_generate = 20
 for rtr in rtr_choices:

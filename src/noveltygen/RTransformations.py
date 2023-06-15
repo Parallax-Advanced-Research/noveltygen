@@ -817,7 +817,7 @@ class RTransformations:
     # def change_type_parent(self, typ):
     #   pass  # TODO: This one feels excessively tricky
 
-    def add_predicate(self, terms: ArgLengthT = []):
+    def add_predicate(self, terms: ArgLengthT = [], avoid=[], spec_avoid=[]):
         letters = string.ascii_lowercase
         num_letters = round(random.uniform(4, 10))
         new_pred_name = self.gen_name('predicate')
@@ -836,15 +836,30 @@ class RTransformations:
         new_pred = Predicate(name=new_pred_name, args=args)
         self.domain.predicates.append(new_pred)
 
-    def remove_predicate(self, pred: Predicate):
-        dependencies = dc(self.dependencies['predicates'][pred])
-        for action_event, p_e, depen_pred in dependencies:
-            if p_e == 'precond':
-                self.remove_precondition(action_event, depen_pred)
-            elif p_e == 'effects':
-                self.remove_effect(action_event, depen_pred)
-            else:
-                print("Something went wrong in Remove_Predicate")
+        return "add_predicate", self.domain.predicates, new_pred
+
+    def remove_predicate(self, pred: Predicate=None, avoid=[], spec_avoid=[]):
+        """
+        This function removes a predicate IFF there is no action/event that uses it
+        """
+
+        # check if pred is used in an action/event
+        used_predicates = set()
+        for action_event in self.domain.operators + self.domain.events:
+            for pred in action_event.precond:
+                used_predicates.add(pred)
+            for pred in action_event.effects[0]:
+                used_predicates.add(pred)
+
+        if pred is None:
+            valid_choices = [x for x in self.domain.predicates if x not in avoid+list(used_predicates)]
+            if valid_choices:
+                pred = random.choice(valid_choices)
+
+        if not pred or pred in used_predicates:
+            return None, None, None
+
+        return "remove_predicate", self.domain.predicates, pred
 
     def add_derived_predicate(self, predicates: ArgLengthDP = [], max_pred_range=3):
         pred_num = round(random.uniform(2, 2 + max_pred_range))
