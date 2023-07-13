@@ -777,12 +777,36 @@ class RTransformations:
             # if there is not parent type, then the child types become top-level
             # if there is no child types, then just remove the type.
             # IMPORTANT NOTE: need to update 'litypes' and 'types' in domain
-            typ = random.choice(self.domain.types)
+            typ = random.choice(self.domain.litypes)
 
         # TODO - make sure that the chosen type is not used in any other predicates, preconditions or effects
         # TODO - note - this is harder than remove_pred and remove_fluent, because need extra loop to check for type
 
-        self.domain.types = [x for x in self.domain.types if x != typ]
+        self.domain.litypes = [x for x in self.domain.litypes if x != typ]
+
+        # if the type is a leaf, just remove it
+        if typ not in self.domain.types.keys() or self.domain.types[typ] is []:
+            self.domain.types.pop(typ, None)
+            parents = [key for key, val in self.domain.types.items() if typ in val]
+            for parent in parents:
+                self.domain.types[parent].remove(typ)
+
+        # if the type has children, then make the parent of the children the parent of the type
+        else:
+            children = self.domain.types.pop(typ, [])
+            parents = [key for key, val in self.domain.types.items() if typ in val]
+            for parent in parents:
+                self.domain.types[parent].remove(typ)
+                self.domain.types[parent] += children
+
+        # TODO - update dependencies
+        #        we need a dependency graph of the types, and then variables that are of this type in actions, fluents, events
+        #        should retrieve their type whenever the domain gets printed out.
+        #        we need a type dependency graph for this
+        #
+        #        Solution idea: Loop over all actions, events, fluents, predicates, etc. to get all the Terms
+        #                       then update the term.type to be the new type
+
 
         return "remove_type", self.domain.types, typ
 
