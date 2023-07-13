@@ -26,7 +26,7 @@ git clone https://github.com/Parallax-Advanced-Research/noveltygen.git
 # create a virtualenv
 cd noveltygen
 python -m venv venv
-source venv/bin/activate
+source venv/bin/activate # or venv\Scripts\activate on windows
 pip install -r requirements.txt
 
 # and now make sure to install tsal
