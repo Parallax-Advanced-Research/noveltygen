@@ -55,12 +55,12 @@ rtr_choices = [RTransformation.ADD_EFFECT,
                #RTransformation.REMOVE_DERIVED_PREDICATE,
                RTransformation.ADD_TYPE,
                RTransformation.REMOVE_TYPE,
-                RTransformation.ADD_TYPE_PARENT,
-                RTransformation.REMOVE_TYPE_PARENT,
-                RTransformation.CHANGE_EFFECT_PROBABILITY,
-                RTransformation.CHANGE_EVENT_FREQUENCY,
-                RTransformation.CHANGE_EVENT_PROBABILITY,
-                RTransformation.CHANGE_FLUENT_EFFECT_VALUE
+               RTransformation.ADD_TYPE_PARENT,
+               RTransformation.REMOVE_TYPE_PARENT,
+               RTransformation.CHANGE_EFFECT_PROBABILITY,
+               RTransformation.CHANGE_EVENT_FREQUENCY,
+               RTransformation.CHANGE_EVENT_PROBABILITY,
+               RTransformation.CHANGE_FLUENT_EFFECT_VALUE
                ]
 
 num_domains_to_generate = 20
