@@ -766,50 +766,73 @@ class RTransformations:
         return "remove_precondition", action_event, precond
 
     def remove_type(self, typ: Term=None, avoid=[], spec_avoid=[]):
-        # TODO: typing on typ to match other functions, get possible args from domain
-        # TODO: update to refelct remove pred
-        # TODO: consider update where we link types to predicates, and remove predicates that involve type?
 
-        if typ is None:
-            # TODO - implement this
-            # idea: choose a random type.
-            # if it has a child types and a parent type, then the parent type becoems the parent of the child types
-            # if there is not parent type, then the child types become top-level
-            # if there is no child types, then just remove the type.
-            # IMPORTANT NOTE: need to update 'litypes' and 'types' in domain
-            typ = random.choice(self.domain.litypes)
+        removable_types = set()
 
-        # TODO - make sure that the chosen type is not used in any other predicates, preconditions or effects
-        # TODO - note - this is harder than remove_pred and remove_fluent, because need extra loop to check for type
+        description_of_type_usage = ""  # helpful error message
 
-        self.domain.litypes = [x for x in self.domain.litypes if x != typ]
+        for existing_typ in self.domain.types:
+            if self.domain.types[existing_typ] is []:
+                removable_types.add(existing_typ)
+            elif typ and typ == existing_typ:
+                description_of_type_usage = "Type {} cant be removed because it has children {} ".format(typ, self.domain.types[typ])
 
-        # if the type is a leaf, just remove it
-        if typ not in self.domain.types.keys() or self.domain.types[typ] is []:
-            self.domain.types.pop(typ, None)
-            parents = [key for key, val in self.domain.types.items() if typ in val]
-            for parent in parents:
-                self.domain.types[parent].remove(typ)
+        # check constants
+        for constant in self.domain.constants:
+            if typ and typ == constant.type():
+                description_of_type_usage = "Constant {} has this type".format(constant)
+            removable_types.discard(typ)
 
-        # if the type has children, then make the parent of the children the parent of the type
+        # check operators and events
+        for operator_or_event in self.domain.operators+self.domain.events:
+            # check params
+            for param in operator_or_event.params:
+                if typ and typ == param.type():
+                    description_of_type_usage = "Parameter {} of {} has this type".format(param, operator_or_event)
+                removable_types.discard(typ)
+
+            # check preconditions and effects
+            for pred in operator_or_event.precond()+operator_or_event.effects():
+                for arg in pred.args:
+                    if typ and typ == arg.type():
+                        description_of_type_usage = "Arg {} of Predicate {} of {} has this type".format(arg, pred, operator_or_event)
+                    removable_types.discard(typ)
+
+        # check all predicates in domain (even those not used in operators/events)
+        for pred in self.domain.predicates:
+            for arg in pred.args:
+                if typ and typ == arg.type():
+                    description_of_type_usage = "Arg {} of Predicate {} has this type".format(arg, pred)
+                removable_types.discard(typ)
+
+        # check fluents
+        for fluent in self.domain.fluents:
+            if typ and typ == fluent.type():
+                description_of_type_usage = "Fluent {} has this type".format(fluent)
+            removable_types.discard(typ)
+
+            for arg in fluent.args:
+                if typ and typ == arg.type():
+                    description_of_type_usage = "Arg {} of Fluent {} has this type".format(arg, fluent)
+                removable_types.discard(typ)
+
+        if typ:
+            if typ in removable_types:
+                self.domain.types.pop(typ, None)
+                parents = [key for key, val in self.domain.types.items() if typ in val]
+                for parent in parents:
+                    self.domain.types[parent].remove(typ)
+
+                return "remove_type", self.domain.types, typ
+            else:
+                raise Exception("Can't remove type because: {}".format(description_of_type_usage))
         else:
-            children = self.domain.types.pop(typ, [])
-            parents = [key for key, val in self.domain.types.items() if typ in val]
-            for parent in parents:
-                self.domain.types[parent].remove(typ)
-                self.domain.types[parent] += children
-
-        # TODO - update dependencies
-        #        we need a dependency graph of the types, and then variables that are of this type in actions, fluents, events
-        #        should retrieve their type whenever the domain gets printed out.
-        #        we need a type dependency graph for this
-        #
-        #        Solution idea: Loop over all actions, events, fluents, predicates, etc. to get all the Terms
-        #                       then update the term.type to be the new type
-
-
-        return "remove_type", self.domain.types, typ
-
+            # pick a random one if there is 1
+            if len(removable_types) > 0:
+                random_typ = random.choice(removable_types)
+                return "remove_type", self.domain.types, random_typ
+            else:
+                return None, None, None
 
     def add_predicate(self, terms: ArgLengthT = [], avoid=[], spec_avoid=[]):
         letters = string.ascii_lowercase
