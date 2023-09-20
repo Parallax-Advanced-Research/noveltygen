@@ -1,6 +1,6 @@
 (define (domain BLOCKS)
   (:requirements :typing)
-  (:types block player test1 - int)
+  (:types block player test2 test1 - int)
 
   (:constants )
 

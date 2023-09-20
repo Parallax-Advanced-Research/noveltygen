@@ -767,15 +767,23 @@ class RTransformations:
 
     def remove_type(self, typ: Term=None, avoid=[], spec_avoid=[]):
 
+        print(f"self.domain.types={self.domain.types}")
+        print(f"self.domain.litypes={self.domain.litypes}")
+
         removable_types = set()
 
         description_of_type_usage = ""  # helpful error message
 
-        for existing_typ in self.domain.types:
-            if self.domain.types[existing_typ] is []:
+        for existing_typ in self.domain.litypes:
+            print(f"looking at type {existing_typ}")
+            if existing_typ not in self.domain.types:
+                removable_types.add(existing_typ)
+            elif self.domain.types[existing_typ] is []:
                 removable_types.add(existing_typ)
             elif typ and typ == existing_typ:
-                description_of_type_usage = "Type {} cant be removed because it has children {} ".format(typ, self.domain.types[typ])
+                description_of_type_usage = "Type {} cant be removed because it has children {} ".format(typ, self.domain.litypes[typ])
+
+        print(f"removable types are {removable_types}")
 
         # check constants
         for constant in self.domain.constants:
@@ -792,15 +800,26 @@ class RTransformations:
                 removable_types.discard(typ)
 
             # check preconditions and effects
-            for pred in operator_or_event.precond()+operator_or_event.effects():
-                for arg in pred.args:
-                    if typ and typ == arg.type():
-                        description_of_type_usage = "Arg {} of Predicate {} of {} has this type".format(arg, pred, operator_or_event)
-                    removable_types.discard(typ)
+            for literal in operator_or_event.precond + operator_or_event.effects:
+                print(f"literal is {literal}")
+                if isinstance(literal, list):
+                    # these are effects
+                    for effect in literal:
+                        for arg in effect[1].predicate.args:
+                            if typ and typ == arg.type():
+                                description_of_type_usage = "Arg {} of Effect {} of {} has this type".format(arg, effect, operator_or_event)
+                            removable_types.discard(typ)
+                else:
+                    for arg in literal.predicate.args:
+                        if typ and typ == arg.type():
+                            description_of_type_usage = "Arg {} of Predicate {} of {} has this type".format(arg, literal, operator_or_event)
+                        removable_types.discard(typ)
 
         # check all predicates in domain (even those not used in operators/events)
         for pred in self.domain.predicates:
             for arg in pred.args:
+                # TODO - left off here, somehow arg.type is None when it shouldn't be
+                print(f"Looking at arg type {arg.type} of predicate {pred}")
                 if typ and typ == arg.type():
                     description_of_type_usage = "Arg {} of Predicate {} has this type".format(arg, pred)
                 removable_types.discard(typ)
@@ -828,8 +847,9 @@ class RTransformations:
                 raise Exception("Can't remove type because: {}".format(description_of_type_usage))
         else:
             # pick a random one if there is 1
+            print(f"removable types are {removable_types}")
             if len(removable_types) > 0:
-                random_typ = random.choice(removable_types)
+                random_typ = random.choice(list(removable_types))
                 return "remove_type", self.domain.types, random_typ
             else:
                 return None, None, None
